@@ -1,9 +1,19 @@
 import { serve } from "https://deno.land/std@0.120.0/http/server.ts";
 
 const handleRequest = (request) => {
-  console.log(`Request to ${request.url}`);
-  return new Response("Hello world!");
+  const url = new URL(request.url);
+  const params = url.searchParams;
+
+  const one = Number(params.get("one"));
+  const two = Number(params.get("two"));
+
+  return new Response(`Sum: ${one + two}`);
 };
 
-console.log("Launching server on port 7777");
-serve(handleRequest, { port: 7777 });
+let port = 7777;
+if (Deno.args.length > 0) {
+  const lastArgument = Deno.args[Deno.args.length - 1];
+  port = Number(lastArgument);
+}
+
+serve(handleRequest, { port: port });
